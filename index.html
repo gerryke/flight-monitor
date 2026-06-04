@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>厦门 → 新加坡 航班最低价监控</title>
+<title>厦门 → 新加坡 5 航班最低价监控</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <style>
   :root {
     --bg: #0f1220; --card: #1a1f35; --card2: #1e2440;
     --fg: #e8ecf5; --muted: #8b93ad; --border: #2a3050;
-    --sq: #5b8cff; --mf1: #ff7a5b; --mf2: #3ddc97;
+    --sq: #5b8cff; --mf1: #ff7a5b; --mf2: #3ddc97; --cz1: #ffd166; --cz2: #a78bfa;
     --badge-gf: #1a6b3c; --badge-ct: #7b3a00; --badge-fz: #2a1a7a;
   }
   * { box-sizing: border-box; }
@@ -20,12 +20,14 @@
   .subtitle { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
 
   /* ── 航班信息卡片 ── */
-  .flights-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .flights-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
   @media (max-width: 640px) { .flights-grid { grid-template-columns: 1fr; } }
   .flight-card { background: var(--card); border-radius: 12px; padding: 16px; border-left: 3px solid; }
   .flight-card.sq  { border-color: var(--sq); }
   .flight-card.mf1 { border-color: var(--mf1); }
   .flight-card.mf2 { border-color: var(--mf2); }
+  .flight-card.cz1 { border-color: var(--cz1); }
+  .flight-card.cz2 { border-color: var(--cz2); }
   .flight-num { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
   .airline-name { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
   .times { display: flex; align-items: center; gap: 8px; }
@@ -52,6 +54,8 @@
   .fn.sq  { color: var(--sq); }
   .fn.mf1 { color: var(--mf1); }
   .fn.mf2 { color: var(--mf2); }
+  .fn.cz1 { color: var(--cz1); }
+  .fn.cz2 { color: var(--cz2); }
   .fl-detail { font-size: 11px; color: var(--muted); margin-top: 2px; }
   .price-cell { }
   .price-val { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 16px; }
@@ -73,8 +77,8 @@
 </head>
 <body>
 
-<h1>厦门 (XMN) → 新加坡 (SIN) 航班最低价监控</h1>
-<div class="subtitle">单程经济舱 · 人民币含税含燃油 · 2026 年 7 月 24 / 25 / 26 日出发</div>
+<h1>厦门 (XMN) → 新加坡 (SIN) 5 航班最低价监控</h1>
+<div class="subtitle">单程经济舱 · 人民币含税含燃油 · 监控 SQ869 / MF851 / MF885 / CZ353 / CZ3039 · 2026 年 7 月 24 / 25 / 26 日出发</div>
 
 <!-- ── 航班信息卡片 ── -->
 <div class="flights-grid">
@@ -130,6 +134,40 @@
     <div class="duration">飞行时长约 4h 20m · 每日运营</div>
   </div>
 
+  <div class="flight-card cz1">
+    <div class="flight-num">CZ 353</div>
+    <div class="airline-name">中国南方航空 China Southern · 广州中转航段</div>
+    <div class="times">
+      <div class="time-col">
+        <div class="time-val">08:20</div>
+        <div class="time-city">CAN 广州</div>
+      </div>
+      <div class="time-arrow">→</div>
+      <div class="time-col">
+        <div class="time-val">12:30</div>
+        <div class="time-city">SIN 新加坡</div>
+      </div>
+    </div>
+    <div class="duration">飞行时长约 4h 10m · 以航司排班为准</div>
+  </div>
+
+  <div class="flight-card cz2">
+    <div class="flight-num">CZ 3039</div>
+    <div class="airline-name">中国南方航空 China Southern · 广州中转航段</div>
+    <div class="times">
+      <div class="time-col">
+        <div class="time-val">12:45</div>
+        <div class="time-city">CAN 广州</div>
+      </div>
+      <div class="time-arrow">→</div>
+      <div class="time-col">
+        <div class="time-val">16:50</div>
+        <div class="time-city">SIN 新加坡</div>
+      </div>
+    </div>
+    <div class="duration">飞行时长约 4h 05m · 以航司排班为准</div>
+  </div>
+
 </div>
 <div class="schedule-note" style="margin-bottom:20px">
   ⚠ 以上时刻为计划排班时刻，以航空公司官网为准，实际可能因季节性调整而略有变动。
@@ -171,9 +209,11 @@ const FLIGHTS = [
   { id: "SQ869", cls: "sq",  airline: "新加坡航空", dep: "13:40", arr: "18:45" },
   { id: "MF851", cls: "mf1", airline: "厦门航空",   dep: "10:55", arr: "15:15" },
   { id: "MF885", cls: "mf2", airline: "厦门航空",   dep: "18:00", arr: "22:20" },
+  { id: "CZ353", cls: "cz1", airline: "南方航空",   dep: "08:20", arr: "12:30" },
+  { id: "CZ3039", cls: "cz2", airline: "南方航空",  dep: "12:45", arr: "16:50" },
 ];
 const DATES = ["2026-07-24", "2026-07-25", "2026-07-26"];
-const COLORS = { SQ869: "#5b8cff", MF851: "#ff7a5b", MF885: "#3ddc97" };
+const COLORS = { SQ869: "#5b8cff", MF851: "#ff7a5b", MF885: "#3ddc97", CZ353: "#ffd166", CZ3039: "#a78bfa" };
 
 function sourceBadge(source) {
   if (!source) return "";
