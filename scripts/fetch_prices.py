@@ -58,7 +58,7 @@ def search_date(page, date: str) -> list[dict]:
         page.wait_for_timeout(3000)
 
     # 携程航班行的 class 是 flight-item，价格格式是 ¥XXXX起
-    result = page.evaluate("""
+    result = page.evaluate(r"""
         (flights) => {
             const results = {};
             // 找所有航班行容器（直接匹配携程结构）
