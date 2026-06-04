@@ -7,7 +7,28 @@
     "source": "Google Flights"
   },
   {
+    "flight": "MF851",
+    "depart_date": "2026-07-24",
+    "ts": "2026-06-04T18:48:35+08:00",
+    "price_cny": 1098,
+    "source": "携程"
+  },
+  {
     "flight": "MF885",
+    "depart_date": "2026-07-24",
+    "ts": "2026-06-04T17:40:14+08:00",
+    "price_cny": 10380,
+    "source": "Google Flights"
+  },
+  {
+    "flight": "MF885",
+    "depart_date": "2026-07-24",
+    "ts": "2026-06-04T18:48:35+08:00",
+    "price_cny": 1098,
+    "source": "携程"
+  },
+  {
+    "flight": "SQ869",
     "depart_date": "2026-07-24",
     "ts": "2026-06-04T17:40:14+08:00",
     "price_cny": 10380,
@@ -16,9 +37,9 @@
   {
     "flight": "SQ869",
     "depart_date": "2026-07-24",
-    "ts": "2026-06-04T17:40:14+08:00",
-    "price_cny": 10380,
-    "source": "Google Flights"
+    "ts": "2026-06-04T18:48:35+08:00",
+    "price_cny": 1098,
+    "source": "携程"
   },
   {
     "flight": "MF851",
@@ -28,7 +49,28 @@
     "source": "Google Flights"
   },
   {
+    "flight": "MF851",
+    "depart_date": "2026-07-25",
+    "ts": "2026-06-04T18:48:43+08:00",
+    "price_cny": 1257,
+    "source": "携程"
+  },
+  {
     "flight": "MF885",
+    "depart_date": "2026-07-25",
+    "ts": "2026-06-04T17:40:14+08:00",
+    "price_cny": 10380,
+    "source": "Google Flights"
+  },
+  {
+    "flight": "MF885",
+    "depart_date": "2026-07-25",
+    "ts": "2026-06-04T18:48:43+08:00",
+    "price_cny": 1257,
+    "source": "携程"
+  },
+  {
+    "flight": "SQ869",
     "depart_date": "2026-07-25",
     "ts": "2026-06-04T17:40:14+08:00",
     "price_cny": 10380,
@@ -37,9 +79,9 @@
   {
     "flight": "SQ869",
     "depart_date": "2026-07-25",
-    "ts": "2026-06-04T17:40:14+08:00",
-    "price_cny": 10380,
-    "source": "Google Flights"
+    "ts": "2026-06-04T18:48:43+08:00",
+    "price_cny": 1098,
+    "source": "携程"
   },
   {
     "flight": "MF851",
@@ -49,7 +91,28 @@
     "source": "Google Flights"
   },
   {
+    "flight": "MF851",
+    "depart_date": "2026-07-26",
+    "ts": "2026-06-04T18:48:52+08:00",
+    "price_cny": 1020,
+    "source": "携程"
+  },
+  {
     "flight": "MF885",
+    "depart_date": "2026-07-26",
+    "ts": "2026-06-04T17:40:14+08:00",
+    "price_cny": 10380,
+    "source": "Google Flights"
+  },
+  {
+    "flight": "MF885",
+    "depart_date": "2026-07-26",
+    "ts": "2026-06-04T18:48:52+08:00",
+    "price_cny": 1020,
+    "source": "携程"
+  },
+  {
+    "flight": "SQ869",
     "depart_date": "2026-07-26",
     "ts": "2026-06-04T17:40:14+08:00",
     "price_cny": 10380,
@@ -58,8 +121,8 @@
   {
     "flight": "SQ869",
     "depart_date": "2026-07-26",
-    "ts": "2026-06-04T17:40:14+08:00",
-    "price_cny": 10380,
-    "source": "Google Flights"
+    "ts": "2026-06-04T18:48:52+08:00",
+    "price_cny": 1020,
+    "source": "携程"
   }
 ]
