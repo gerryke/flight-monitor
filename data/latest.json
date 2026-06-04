@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-04T18:56:14+08:00",
+  "updated_at": "2026-06-04T19:57:09+08:00",
   "prices": [
     {
       "flight": "MF851",
@@ -34,7 +34,7 @@
     {
       "flight": "SQ869",
       "depart_date": "2026-07-25",
-      "price_cny": 1270,
+      "price_cny": 1020,
       "source": "携程"
     },
     {
@@ -52,7 +52,7 @@
     {
       "flight": "SQ869",
       "depart_date": "2026-07-26",
-      "price_cny": 1020,
+      "price_cny": 1460,
       "source": "携程"
     }
   ]
