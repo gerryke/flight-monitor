@@ -2,16 +2,16 @@
 
 厦门 (XMN) → 新加坡 (SIN) 指定航班最低价监控，纯静态站，Cloudflare Pages 托管。
 
-监控：SQ869 / MF851 / MF885 × 2026-07-24 / 25 / 26。价格为人民币·含税·含燃油。
+监控：SQ869 / MF851 / MF885 / CZ353 / CZ3039 × 2026-07-24 / 25 / 26。价格为人民币·含税·含燃油。
 
 ## 结构
 - `index.html` 静态页面（表格 + Chart.js 折线图）
 - `data/history.json` 历史价格累积；`data/latest.json` 最新快照
-- `scripts/pricedata.py` 合并去重 + 生成快照；`scripts/update.md` 抓价指令
+- `scripts/fetch_prices.py` 本机抓价；`scripts/pricedata.py` 合并去重 + 生成快照；`scripts/update.md` 云端抓价指令
 - `local/` 本机每小时 launchd 触发
 
 ## 数据更新（双触发）
-- **本机每小时**（电脑开机时）：launchd 调 `local/run_local.sh` → `claude -p` 执行 `scripts/update.md`
+- **本机每小时**（电脑开机时）：launchd 调 `local/run_local.sh` → `scripts/fetch_prices.py`
 - **云端每天 3 次**（兜底）：claude.ai routine 执行 `scripts/update.md`
 - 两路都按 航班+日期+整点 去重合并，push 后 Cloudflare Pages 自动部署
 
