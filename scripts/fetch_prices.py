@@ -29,6 +29,14 @@ FLIGHT_DEP = {
     "CZ3039": ["12:45"],
 }
 
+FLIGHT_ROUTES = {
+    "SQ869": "xmn-sin",
+    "MF851": "xmn-sin",
+    "MF885": "xmn-sin",
+    "CZ353": "can-sin",
+    "CZ3039": "can-sin",
+}
+
 
 def now_cst() -> str:
     return datetime.now(tz=timezone(timedelta(hours=8))).strftime("%Y-%m-%dT%H:%M:%S+08:00")
@@ -43,9 +51,17 @@ def parse_price(text: str) -> int | None:
     return None
 
 
-def search_date(page, date: str) -> list[dict]:
-    """抓单日 XMN→SIN 目标航班的含税价。"""
-    url = (f"https://flights.ctrip.com/international/search/oneway/xmn-sin"
+def group_flights_by_route(flights: list[str]) -> dict[str, list[str]]:
+    groups = {}
+    for flight in flights:
+        route = FLIGHT_ROUTES[flight]
+        groups.setdefault(route, []).append(flight)
+    return groups
+
+
+def search_date(page, date: str, route: str, flights: list[str]) -> list[dict]:
+    """抓单日、单航线目标航班的含税价。"""
+    url = (f"https://flights.ctrip.com/international/search/oneway/{route}"
            f"?depdate={date}&cabin=y&adult=1")
     page.goto(url, wait_until="domcontentloaded", timeout=40000)
     page.wait_for_timeout(5000)
@@ -83,7 +99,7 @@ def search_date(page, date: str) -> list[dict]:
             }
             return results;
         }
-    """, FLIGHTS)
+    """, flights)
 
     ts = now_cst()
     records = []
@@ -121,18 +137,21 @@ def fetch_all() -> list[dict]:
         page = ctx.new_page()
         Stealth().apply_stealth_sync(page)
 
+        route_groups = group_flights_by_route(FLIGHTS)
         for date in DATES:
             print(f"\n--- {date} ---", flush=True)
-            try:
-                records = search_date(page, date)
-                for r in records:
-                    print(f"  {r['flight']} ¥{r['price_cny']:,}", flush=True)
-                    all_records.append(r)
-                missing = [f for f in FLIGHTS if not any(r["flight"] == f for r in records)]
-                for f in missing:
-                    print(f"  {f} skipped (not found)", flush=True)
-            except Exception as e:
-                print(f"  ERROR: {e}", flush=True)
+            for route, flights in route_groups.items():
+                print(f"  route {route}", flush=True)
+                try:
+                    records = search_date(page, date, route, flights)
+                    for r in records:
+                        print(f"    {r['flight']} ¥{r['price_cny']:,}", flush=True)
+                        all_records.append(r)
+                    missing = [f for f in flights if not any(r["flight"] == f for r in records)]
+                    for f in missing:
+                        print(f"    {f} skipped (not found)", flush=True)
+                except Exception as e:
+                    print(f"    ERROR: {e}", flush=True)
 
         ctx.close()
         browser.close()
