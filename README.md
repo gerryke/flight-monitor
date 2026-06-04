@@ -1,6 +1,6 @@
 # flight-monitor
 
-厦门 (XMN) → 新加坡 (SIN) 指定航班最低价监控，纯静态站，Cloudflare Pages 托管。
+指定赴新加坡航班最低价监控，纯静态站，Cloudflare Pages 托管。
 
 监控：SQ869 / MF851 / MF885 / CZ353 / CZ3039 × 2026-07-24 / 25 / 26。价格为人民币·含税·含燃油。
 
