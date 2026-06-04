@@ -59,6 +59,12 @@ def group_flights_by_route(flights: list[str]) -> dict[str, list[str]]:
     return groups
 
 
+def load_more_results(page):
+    for _ in range(4):
+        page.mouse.wheel(0, 2500)
+        page.wait_for_timeout(800)
+
+
 def search_date(page, date: str, route: str, flights: list[str]) -> list[dict]:
     """抓单日、单航线目标航班的含税价。"""
     url = (f"https://flights.ctrip.com/international/search/oneway/{route}"
@@ -72,6 +78,7 @@ def search_date(page, date: str, route: str, flights: list[str]) -> list[dict]:
         page.wait_for_timeout(2000)
     except Exception:
         page.wait_for_timeout(3000)
+    load_more_results(page)
 
     # 携程航班行的 class 是 flight-item，价格格式是 ¥XXXX起
     result = page.evaluate(r"""
