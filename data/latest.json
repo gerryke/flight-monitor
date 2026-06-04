@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-05T05:12:05+08:00",
+  "updated_at": "2026-06-05T06:13:12+08:00",
   "prices": [
     {
       "flight": "CZ3039",
@@ -58,7 +58,7 @@
     {
       "flight": "SQ869",
       "depart_date": "2026-07-25",
-      "price_cny": 1460,
+      "price_cny": 1270,
       "source": "携程"
     },
     {
