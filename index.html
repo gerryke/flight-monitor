@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>厦门 → 新加坡 航班最低价监控</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1220; --card: #1a1f35; --card2: #1e2440;
+    --fg: #e8ecf5; --muted: #8b93ad; --border: #2a3050;
+    --sq: #5b8cff; --mf1: #ff7a5b; --mf2: #3ddc97;
+    --badge-gf: #1a6b3c; --badge-ct: #7b3a00; --badge-fz: #2a1a7a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+         background: var(--bg); color: var(--fg); padding: 28px 24px; max-width: 1000px; }
+  h1 { font-size: 20px; margin: 0 0 4px; font-weight: 600; }
+  .subtitle { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+
+  /* ── 航班信息卡片 ── */
+  .flights-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  @media (max-width: 640px) { .flights-grid { grid-template-columns: 1fr; } }
+  .flight-card { background: var(--card); border-radius: 12px; padding: 16px; border-left: 3px solid; }
+  .flight-card.sq  { border-color: var(--sq); }
+  .flight-card.mf1 { border-color: var(--mf1); }
+  .flight-card.mf2 { border-color: var(--mf2); }
+  .flight-num { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+  .airline-name { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+  .times { display: flex; align-items: center; gap: 8px; }
+  .time-col { text-align: center; }
+  .time-val { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
+  .time-city { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .time-arrow { color: var(--muted); font-size: 16px; flex: 1; text-align: center; }
+  .duration { font-size: 11px; color: var(--muted); text-align: center; margin-top: 10px; }
+  .schedule-note { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* ── 当前最低价表格 ── */
+  .card { background: var(--card); border-radius: 12px; padding: 18px; margin-bottom: 20px; }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase;
+                letter-spacing: 0.06em; margin-bottom: 14px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { padding: 8px 12px; text-align: center; font-size: 12px; color: var(--muted);
+       font-weight: 500; border-bottom: 1px solid var(--border); }
+  th.flight-col { text-align: left; }
+  td { padding: 10px 12px; text-align: center; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  td.flight-info { text-align: left; }
+  td:last-child, th:last-child { border-bottom: none; }
+  tr:last-child td { border-bottom: none; }
+  .fn { font-weight: 700; font-size: 14px; }
+  .fn.sq  { color: var(--sq); }
+  .fn.mf1 { color: var(--mf1); }
+  .fn.mf2 { color: var(--mf2); }
+  .fl-detail { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .price-cell { }
+  .price-val { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 16px; }
+  .source-badge { display: inline-block; font-size: 10px; padding: 2px 6px; border-radius: 4px;
+                  margin-top: 3px; font-weight: 500; }
+  .source-gf  { background: var(--badge-gf); color: #7dffc0; }
+  .source-ct  { background: var(--badge-ct); color: #ffb87a; }
+  .source-fz  { background: var(--badge-fz); color: #b0aaff; }
+  .source-unk { background: #222; color: var(--muted); }
+  td.na { color: var(--muted); font-size: 18px; }
+  .updated { font-size: 12px; color: var(--muted); margin-top: 12px; }
+
+  /* ── 历史折线图 ── */
+  .controls { margin-bottom: 12px; font-size: 13px; color: var(--muted); }
+  select { background: var(--card2); color: var(--fg); border: 1px solid var(--border);
+           border-radius: 8px; padding: 5px 10px; font-size: 13px; margin-left: 4px; }
+  canvas { max-height: 360px; }
+</style>
+</head>
+<body>
+
+<h1>厦门 (XMN) → 新加坡 (SIN) 航班最低价监控</h1>
+<div class="subtitle">单程经济舱 · 人民币含税含燃油 · 2026 年 7 月 24 / 25 / 26 日出发</div>
+
+<!-- ── 航班信息卡片 ── -->
+<div class="flights-grid">
+
+  <div class="flight-card sq">
+    <div class="flight-num">SQ 869</div>
+    <div class="airline-name">新加坡航空 Singapore Airlines</div>
+    <div class="times">
+      <div class="time-col">
+        <div class="time-val">13:40</div>
+        <div class="time-city">XMN 厦门</div>
+      </div>
+      <div class="time-arrow">→</div>
+      <div class="time-col">
+        <div class="time-val">18:45</div>
+        <div class="time-city">SIN 新加坡</div>
+      </div>
+    </div>
+    <div class="duration">飞行时长约 5h 05m · 每日运营</div>
+  </div>
+
+  <div class="flight-card mf1">
+    <div class="flight-num">MF 851</div>
+    <div class="airline-name">厦门航空 Xiamen Airlines</div>
+    <div class="times">
+      <div class="time-col">
+        <div class="time-val">10:55</div>
+        <div class="time-city">XMN 厦门</div>
+      </div>
+      <div class="time-arrow">→</div>
+      <div class="time-col">
+        <div class="time-val">15:15</div>
+        <div class="time-city">SIN 新加坡</div>
+      </div>
+    </div>
+    <div class="duration">飞行时长约 4h 20m · 每日运营</div>
+  </div>
+
+  <div class="flight-card mf2">
+    <div class="flight-num">MF 885</div>
+    <div class="airline-name">厦门航空 Xiamen Airlines</div>
+    <div class="times">
+      <div class="time-col">
+        <div class="time-val">18:00</div>
+        <div class="time-city">XMN 厦门</div>
+      </div>
+      <div class="time-arrow">→</div>
+      <div class="time-col">
+        <div class="time-val">22:20</div>
+        <div class="time-city">SIN 新加坡</div>
+      </div>
+    </div>
+    <div class="duration">飞行时长约 4h 20m · 每日运营</div>
+  </div>
+
+</div>
+<div class="schedule-note" style="margin-bottom:20px">
+  ⚠ 以上时刻为计划排班时刻，以航空公司官网为准，实际可能因季节性调整而略有变动。
+</div>
+
+<!-- ── 当前最低价 ── -->
+<div class="card">
+  <div class="card-title">当前最低价</div>
+  <table id="latest-table">
+    <thead>
+      <tr>
+        <th class="flight-col">航班</th>
+        <th>7 月 24 日 (周五)</th>
+        <th>7 月 25 日 (周六)</th>
+        <th>7 月 26 日 (周日)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <div class="updated" id="updated"></div>
+</div>
+
+<!-- ── 历史价格曲线 ── -->
+<div class="card">
+  <div class="card-title">历史价格趋势</div>
+  <div class="controls">
+    出发日期：
+    <select id="date-select">
+      <option value="2026-07-24">7 月 24 日</option>
+      <option value="2026-07-25" selected>7 月 25 日</option>
+      <option value="2026-07-26">7 月 26 日</option>
+    </select>
+  </div>
+  <canvas id="chart"></canvas>
+</div>
+
+<script>
+const FLIGHTS = [
+  { id: "SQ869", cls: "sq",  airline: "新加坡航空", dep: "13:40", arr: "18:45" },
+  { id: "MF851", cls: "mf1", airline: "厦门航空",   dep: "10:55", arr: "15:15" },
+  { id: "MF885", cls: "mf2", airline: "厦门航空",   dep: "18:00", arr: "22:20" },
+];
+const DATES = ["2026-07-24", "2026-07-25", "2026-07-26"];
+const COLORS = { SQ869: "#5b8cff", MF851: "#ff7a5b", MF885: "#3ddc97" };
+
+function sourceBadge(source) {
+  if (!source) return "";
+  const s = source.toLowerCase();
+  let cls = "source-unk", label = source;
+  if (s.includes("google")) { cls = "source-gf"; label = "Google Flights"; }
+  else if (s.includes("携程") || s.includes("ctrip")) { cls = "source-ct"; label = "携程"; }
+  else if (s.includes("飞猪") || s.includes("alitrip")) { cls = "source-fz"; label = "飞猪"; }
+  return `<div><span class="source-badge ${cls}">${label}</span></div>`;
+}
+
+function renderLatest(latest) {
+  const tbody = document.querySelector("#latest-table tbody");
+  tbody.innerHTML = "";
+  const priceMap = {};
+  for (const p of (latest.prices || [])) priceMap[p.flight + "|" + p.depart_date] = p;
+
+  for (const f of FLIGHTS) {
+    const tr = document.createElement("tr");
+    let html = `<td class="flight-info">
+      <div class="fn ${f.cls}">${f.id}</div>
+      <div class="fl-detail">${f.airline} · ${f.dep}→${f.arr}</div>
+    </td>`;
+    for (const d of DATES) {
+      const p = priceMap[f.id + "|" + d];
+      if (p) {
+        html += `<td class="price-cell">
+          <div class="price-val">¥${p.price_cny.toLocaleString()}</div>
+          ${sourceBadge(p.source)}
+        </td>`;
+      } else {
+        html += `<td class="na">—</td>`;
+      }
+    }
+    tr.innerHTML = html;
+    tbody.appendChild(tr);
+  }
+
+  document.getElementById("updated").textContent =
+    latest.updated_at
+      ? "最近更新：" + new Date(latest.updated_at).toLocaleString("zh-CN") +
+        "　·　价格每日更新 3 次（云端），本机开启时每小时更新"
+      : "暂无价格数据";
+}
+
+let chart = null;
+let HISTORY = [];
+
+function renderChart(date) {
+  const datasets = FLIGHTS.map(f => ({
+    label: f.id,
+    data: HISTORY
+      .filter(r => r.flight === f.id && r.depart_date === date)
+      .sort((a, b) => a.ts.localeCompare(b.ts))
+      .map(r => ({ x: new Date(r.ts), y: r.price_cny })),
+    borderColor: COLORS[f.id],
+    backgroundColor: COLORS[f.id],
+    tension: 0.25,
+    spanGaps: true,
+    pointRadius: 4,
+  }));
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById("chart"), {
+    type: "line",
+    data: { datasets },
+    options: {
+      scales: {
+        x: { type: "time", time: { unit: "hour", displayFormats: { hour: "M/d HH:mm" } },
+             ticks: { color: "#8b93ad", maxTicksLimit: 10 }, grid: { color: "#2a3050" } },
+        y: { ticks: { color: "#8b93ad", callback: v => "¥" + v.toLocaleString() },
+             grid: { color: "#2a3050" } },
+      },
+      plugins: {
+        legend: { labels: { color: "#e8ecf5", padding: 16 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const f = FLIGHTS.find(f => f.id === ctx.dataset.label);
+              return ` ${ctx.dataset.label}（${f ? f.airline : ""}）  ¥${ctx.parsed.y.toLocaleString()}`;
+            }
+          }
+        }
+      },
+    },
+  });
+}
+
+async function loadJSON(path) {
+  const r = await fetch(path + "?t=" + Date.now());
+  if (!r.ok) throw new Error(path + " " + r.status);
+  return r.json();
+}
+
+async function init() {
+  const [latest, history] = await Promise.all([
+    loadJSON("data/latest.json"),
+    loadJSON("data/history.json"),
+  ]);
+  HISTORY = history;
+  renderLatest(latest);
+  const sel = document.getElementById("date-select");
+  sel.addEventListener("change", () => renderChart(sel.value));
+  renderChart(sel.value);
+}
+
+init().catch(e => {
+  document.body.insertAdjacentHTML("beforeend",
+    `<div class="card" style="color:#ff7a5b">数据加载失败：${e.message}</div>`);
+});
+</script>
+</body>
+</html>
