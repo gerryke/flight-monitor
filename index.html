@@ -273,7 +273,6 @@ function renderLatest(latest) {
 let chart = null;
 let HISTORY = [];
 
-const DASH   = { CZ3039: [6, 3] };
 const OFFSET = { CZ3039: -20 };   // 视觉偏移：重叠时拉开一条缝，tooltip 显示真实价格
 
 function renderChart(date) {
@@ -285,7 +284,6 @@ function renderChart(date) {
       .map(r => ({ x: new Date(r.ts), y: r.price_cny + (OFFSET[f.id] || 0), _real: r.price_cny })),
     borderColor: COLORS[f.id],
     backgroundColor: COLORS[f.id],
-    borderDash: DASH[f.id] || [],
     tension: 0.25,
     spanGaps: true,
     pointRadius: 4,
