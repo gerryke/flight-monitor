@@ -273,6 +273,8 @@ function renderLatest(latest) {
 let chart = null;
 let HISTORY = [];
 
+const DASH = { CZ3039: [6, 3] };
+
 function renderChart(date) {
   const datasets = FLIGHTS.map(f => ({
     label: f.id,
@@ -282,6 +284,7 @@ function renderChart(date) {
       .map(r => ({ x: new Date(r.ts), y: r.price_cny })),
     borderColor: COLORS[f.id],
     backgroundColor: COLORS[f.id],
+    borderDash: DASH[f.id] || [],
     tension: 0.25,
     spanGaps: true,
     pointRadius: 4,
