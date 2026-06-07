@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-07T07:35:31+08:00",
+  "updated_at": "2026-06-07T08:36:35+08:00",
   "prices": [
     {
       "flight": "CZ3039",
@@ -46,7 +46,7 @@
     {
       "flight": "MF851",
       "depart_date": "2026-07-25",
-      "price_cny": 1671,
+      "price_cny": 1669,
       "source": "携程"
     },
     {
