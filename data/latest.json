@@ -1,28 +1,28 @@
 {
-  "updated_at": "2026-06-24T10:22:28+08:00",
+  "updated_at": "2026-06-26T10:05:17+08:00",
   "prices": [
     {
       "flight": "CZ3039",
       "depart_date": "2026-07-24",
-      "price_cny": 1997,
+      "price_cny": 1998,
       "source": "携程"
     },
     {
       "flight": "CZ353",
       "depart_date": "2026-07-24",
-      "price_cny": 1997,
+      "price_cny": 2418,
       "source": "携程"
     },
     {
       "flight": "MF851",
       "depart_date": "2026-07-24",
-      "price_cny": 1671,
+      "price_cny": 1667,
       "source": "携程"
     },
     {
       "flight": "MF885",
       "depart_date": "2026-07-24",
-      "price_cny": 1256,
+      "price_cny": 1257,
       "source": "携程"
     },
     {
@@ -34,25 +34,25 @@
     {
       "flight": "CZ3039",
       "depart_date": "2026-07-25",
-      "price_cny": 2437,
+      "price_cny": 2958,
       "source": "携程"
     },
     {
       "flight": "CZ353",
       "depart_date": "2026-07-25",
-      "price_cny": 2417,
+      "price_cny": 2418,
       "source": "携程"
     },
     {
       "flight": "MF851",
       "depart_date": "2026-07-25",
-      "price_cny": 1671,
+      "price_cny": 1441,
       "source": "携程"
     },
     {
       "flight": "MF885",
       "depart_date": "2026-07-25",
-      "price_cny": 1256,
+      "price_cny": 1098,
       "source": "携程"
     },
     {
